@@ -1,0 +1,14 @@
+<div #canvasContainer  class="w-full h-full bg-gray-900">
+  <canvas #canvas width="700" height="500" class="border border-gray-600"></canvas>
+  <div class="flex text-white text-2xl">
+    <!-- Align item for UX  -->
+    <button class="p-2 hover:bg-gray-700 hover:rounded-md m-1"  (click)="handleLeftClick($event)">Left</button>
+    <button class="p-2 hover:bg-gray-700 hover:rounded-md m-1" (click)="handleRightClick()">Right</button>
+    <button class="p-2 hover:bg-gray-700 hover:rounded-md m-1" (click)="handleUpClick()">Up</button>
+    <button class="p-2 hover:bg-gray-700 hover:rounded-md m-1" (click)="handleDownClick()">Down</button>
+  </div>
+  <div class="flex flex-row-reverse text-white text-lg">
+    <span class="p-2">00</span>
+    <button class="p-1 hover:bg-gray-600" (click)="startGame()">Start</button>
+  </div>
+</div>
