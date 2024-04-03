@@ -16,7 +16,7 @@ export class CanvasComponent implements AfterViewInit {
   score = 0; // score 
   food: { x: number; y: number , width: number, height: number} = { x: 0, y: 0 , width: 10, height: 10 };
   step: number = 10; //
-
+  snakeLength: number = 0;
   resizeObserver! : ResizeObserver;
   currentPos: string = "right";
 
@@ -134,5 +134,23 @@ export class CanvasComponent implements AfterViewInit {
       this.render();
       this.moveSnake(this.food);
     }, 200)
+  }
+  keyDownHandler(event:any):void {
+    switch (event.key) {
+      case 'ArrowUp':
+        this.currentPos = "up"
+        break;
+      case 'ArrowDown':
+        this.currentPos = "down"
+        break;
+      case 'ArrowLeft':
+        this.currentPos = "left"
+        break;
+      case 'ArrowRight':
+        this.currentPos = "right"
+        break;
+      default:
+        break;
+    }
   }
 }

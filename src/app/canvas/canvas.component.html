@@ -1,5 +1,5 @@
-<div #canvasContainer  class="w-full h-full bg-gray-900">
-  <canvas #canvas width="700" height="500" class="border border-gray-600"></canvas>
+<div #canvasContainer  class="w-full h-full bg-gray-900"   tabindex="0" (keydown)="keyDownHandler($event)">
+  <canvas #canvas width="700" height="500" class="border border-gray-600" ></canvas>
   <div class="flex text-white text-2xl">
     <!-- Align item for UX  -->
     <button class="p-2 hover:bg-gray-700 hover:rounded-md m-1"  (click)="handleLeftClick($event)">Left</button>
