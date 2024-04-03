@@ -5,6 +5,6 @@ import { CanvasComponent } from './canvas/canvas.component';
 
 export const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
-  { path: '', component: CanvasComponent },
+  { path: '', component: HomeComponent },
   { path: 'snake', component: CanvasComponent },
 ];

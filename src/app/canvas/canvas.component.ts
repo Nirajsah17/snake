@@ -49,13 +49,12 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   drawSnake(head : any , tail: any) :void{
-    this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
       this.context.strokeStyle = "white";
       this.context.lineWidth = 4;
       this.context.beginPath();
       this.context.moveTo(head.x, head.y);
       this.context.lineTo(tail.x, tail.y);
-      // this.context.closePath();
+      this.context.closePath();
       this.context.stroke();
   }
 
@@ -65,19 +64,10 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   moveSnake(food: any) : void{
-    const canvas = this.canvasContainer.nativeElement;
-
     if(this.snakeHead.x == food.x && this.snakeHead.y == food.y){
       // this.grow();
     }
     this.updatePosition(this.currentPos);
-
-    // this.snakeHead.x = this.snakeHead.x + this.step;
-    // // this.snakeHead.y = this.snakeHead.y + this.step
-
-    // this.snakeTail.x = this.snakeTail.x + this.step;
-    // this.snakeTail.y = this.snakeTail.y + this.step;
-    // redraw the updated snake position and food
   }
 
   resizeCanvas(element: HTMLElement): void {
@@ -101,15 +91,19 @@ export class CanvasComponent implements AfterViewInit {
     switch (position) {
       case 'up':
         this.snakeHead.y = this.snakeHead.y - this.step;
+        this.snakeTail.y = this.snakeTail.y - this.step;
         break;
       case 'down':
         this.snakeHead.y = this.snakeHead.y + this.step;
+        this.snakeTail.y = this.snakeTail.y + this.step;
         break;
       case 'left':
         this.snakeHead.x = this.snakeHead.x - this.step;
+        this.snakeTail.x = this.snakeTail.x - this.step;
         break;
       case 'right':
         this.snakeHead.x = this.snakeHead.x + this.step;
+        this.snakeTail.x = this.snakeTail.x + this.step;
         break;
       default:
         break;
@@ -117,30 +111,28 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   handleLeftClick(event: any): void {
-    console.log(event);
     this.updatePosition("left")
-    console.log("Left Click");
+    this.currentPos = "left";
   }
 
   handleRightClick(){
-    console.log("Right Click");
+    this.currentPos = "right";
     this.updatePosition("right")
   }
 
   handleUpClick(){
-    console.log("Up Click");
     this.updatePosition("up")
+    this.currentPos = "up";
   }
 
   handleDownClick(){
-    console.log("Down Click");
     this.updatePosition("down");
+    this.currentPos = "down";
   }
   startGame(){
     setInterval(()=>{
       this.render();
       this.moveSnake(this.food);
-      // this.startGame();
     }, 200)
   }
 }
