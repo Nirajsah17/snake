@@ -14,58 +14,70 @@ export class CanvasComponent implements AfterViewInit {
   snakeHead!: { x: number; y: number };
   snakeTail!: { x: number; y: number };
   score = 0; // score 
-  food: { x: number; y: number } = { x: 0, y: 0 };
+  food: { x: number; y: number , width: number, height: number} = { x: 0, y: 0 , width: 10, height: 10 };
+  step: number = 10; //
 
   resizeObserver! : ResizeObserver;
+  currentPos: string = "right";
 
   ngAfterViewInit(): void {
     const canvas = this.canvasRef.nativeElement;
     const container = this.canvasContainer.nativeElement;
     this.context = canvas.getContext('2d');
-    this.initGame();
     this.resizeCanvas(container);
+    this.initGame();
   }
 
-  createSnake(): void {
-    this.context.strokeStyle = "white"; // Draw the line
-    this.context.beginPath(); // Begin path
-    this.context.moveTo(2, this.snakeHead.y); // Move to starting point (x=50, y=50)
-    this.context.lineTo(this.snakeHead.x, this.snakeHead.y); // Draw a line to end point (x=350, y=150)
-    this.context.stroke();
+  initGame(){
+    // Set the initial head and tail position
+    // Set initial food position
+    this.snakeHead = { x: 10, y: 10 };
+    this.snakeTail = { x: 20, y: 10 };
+    let x = this.context.canvas.width;
+    let y = this.context.canvas.height;
+    this.food.x = this.getRandomInt(1,x);
+    this.food.y = this.getRandomInt(1,y);
+    this.drawSnake(this.snakeHead, this.snakeTail); 
+    this.drawFood(this.food);
+    // this.drawScore();  
   }
 
-  moveSnake(direction: string){
-    switch (direction) {
-      case 'left':
-        this.snakeHead.x -= 10;
-        break;
-      case 'right':
-        this.snakeHead.x += 10;
-        break;
-      case 'up':
-        this.snakeHead.y -= 10;
-        break;
-      case 'down':
-        this.snakeHead.y += 10;
-        break;
+  render(){
+    this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+    this.drawSnake(this.snakeHead, this.snakeTail);
+    this.drawFood(this.food);
+  }
+
+  drawSnake(head : any , tail: any) :void{
+    this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+      this.context.strokeStyle = "white";
+      this.context.lineWidth = 4;
+      this.context.beginPath();
+      this.context.moveTo(head.x, head.y);
+      this.context.lineTo(tail.x, tail.y);
+      // this.context.closePath();
+      this.context.stroke();
+  }
+
+  drawFood(food:any){
+    this.context.fillStyle = "red";
+    this.context.fillRect(food.x, food.y, food.width, food.height);
+  }
+
+  moveSnake(food: any) : void{
+    const canvas = this.canvasContainer.nativeElement;
+
+    if(this.snakeHead.x == food.x && this.snakeHead.y == food.y){
+      // this.grow();
     }
-  }
+    this.updatePosition(this.currentPos);
 
-  initGame(): void { 
-    this.snakeHead = { x: 20, y: 30 };
-    this.snakeTail = { x: 2, y: this.snakeHead.y };
+    // this.snakeHead.x = this.snakeHead.x + this.step;
+    // // this.snakeHead.y = this.snakeHead.y + this.step
 
-    this.createSnake();
-    // setInterval(() => this.gameLoop(), 10000);
-  }
-
-  gameLoop(): void {
-    // Implement game logic here
-
-    this.moveSnake("right");
-    // this.moveFood();
-    // this.checkCollision();
-    // this.drawScore();
+    // this.snakeTail.x = this.snakeTail.x + this.step;
+    // this.snakeTail.y = this.snakeTail.y + this.step;
+    // redraw the updated snake position and food
   }
 
   resizeCanvas(element: HTMLElement): void {
@@ -74,28 +86,61 @@ export class CanvasComponent implements AfterViewInit {
       const container = element;
       canvas.width = container.clientWidth - 10;
       canvas.height = container.clientHeight - 100;
-      this.createSnake();
+      this.render();
     });
     this.resizeObserver.observe(element);
   }
 
-  handleLeftClick(event: MouseEvent): void {
+  getRandomInt(min: number, max: number): number {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  updatePosition(position: string): void {
+    switch (position) {
+      case 'up':
+        this.snakeHead.y = this.snakeHead.y - this.step;
+        break;
+      case 'down':
+        this.snakeHead.y = this.snakeHead.y + this.step;
+        break;
+      case 'left':
+        this.snakeHead.x = this.snakeHead.x - this.step;
+        break;
+      case 'right':
+        this.snakeHead.x = this.snakeHead.x + this.step;
+        break;
+      default:
+        break;
+    }
+  }
+
+  handleLeftClick(event: any): void {
     console.log(event);
+    this.updatePosition("left")
     console.log("Left Click");
   }
 
   handleRightClick(){
     console.log("Right Click");
+    this.updatePosition("right")
   }
 
   handleUpClick(){
     console.log("Up Click");
+    this.updatePosition("up")
   }
 
   handleDownClick(){
     console.log("Down Click");
+    this.updatePosition("down");
   }
   startGame(){
-    
+    setInterval(()=>{
+      this.render();
+      this.moveSnake(this.food);
+      // this.startGame();
+    }, 200)
   }
 }
