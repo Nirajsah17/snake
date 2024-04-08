@@ -7,6 +7,10 @@
         </div>
         <div class="p-2">High Score : {{highestScore}}</div>
         <div class="p-2">Score : {{score}}</div>
+        <button class="p-2 border" (click)="high()">-</button>
+        <div class="p-2">{{speed}}</div>
+        <button class="p-2 border" (click)="low()">+</button>
+        <div class="p-2">Speed</div>
     </div>
     <div #container class="w-full h-full bg-gray-700 flex flex-1" tabindex="1"(keydown)="direction($event)">
         <canvas #canvas class="" width={{width}} height={{height}}></canvas>

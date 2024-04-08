@@ -148,6 +148,14 @@ export class CanvasComponent implements AfterViewInit {
     this.d = "DOWN";
   }
 
+  low(){
+    this.speed+=10;
+  }
+
+  high(){
+    this.speed-=10;
+  }
+
   // changeSpeed(e:any){
   //   console.log(e);
   // }
