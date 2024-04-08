@@ -5,7 +5,7 @@
 
 ![ALT snake game](./snake-game.png)
 
-> Note: Make sure the canvas should be in focus,else click some where on canvas for keyboard shortcut in PC
+> Note: Make sure the canvas should be in focus,else click some where on canvas for keyboard shortcut binding in PC
 
 ## Development server
 
