@@ -52,7 +52,7 @@ export class CanvasComponent implements AfterViewInit {
       if (!this.gamePause) {
         this.game = setInterval(this.draw, 100);
       } else {
-        clearInterval(this.game);
+        clearInterval(this.game.bind(this));
         this.draw();
       }
     }
@@ -118,29 +118,36 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   gameOver() {
-    clearInterval(this.game);
+    clearInterval(this.game.bind(this));
     alert("Game Over! Your score is " + this.score);
-    location.reload();
+    window.location.reload();
   }
 
   upClick(){
-    this.d = "UP"
+    this.d = "UP";
+    this.game = setInterval(this.draw, 100);
   }
 
   leftClick() {
     this.d = "LEFT";
+    // this.game = setInterval(this.draw, 100);
   }
 
   playClick() {
-
+    // this.game = setInterval(this.draw, 100);
+    // this.gamePause = !this.gamePause;
+    // this.game = setInterval(this.draw.bind(this), 100);
   }
 
   rightClick() {
     this.d = "RIGHT";
+    // this.game = setInterval(this.draw, 100);
   }
 
   downClick() {
     this.d = "DOWN";
+    // this.game = setInterval(this.draw, 100);
+
   }
 
 
