@@ -120,7 +120,7 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   gameOver() {
-    clearInterval(this.game.bind(this));
+    clearInterval(this.game);
     alert("Game Over! Your score is " + this.score);
     window.location.reload();
   }
