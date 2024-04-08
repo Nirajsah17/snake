@@ -1,10 +1,12 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.css'],
-  standalone: true
+  standalone: true,
+  imports: [FormsModule]
 })
 export class CanvasComponent implements AfterViewInit {
   highestScore = 0;
@@ -18,6 +20,7 @@ export class CanvasComponent implements AfterViewInit {
   gamePause: boolean = false;
   ctx: any;
   game: any;
+  speed: number = 100;
 
   @ViewChild("canvas") canvas!: ElementRef;
   @ViewChild("container") container!: ElementRef;
@@ -35,7 +38,7 @@ export class CanvasComponent implements AfterViewInit {
       });
     });
     resizeObserver.observe(this.container.nativeElement);
-    this.game = setInterval(this.draw.bind(this), 100);
+    this.game = setInterval(this.draw.bind(this), this.speed);
   }
 
   direction(e: any) {
@@ -50,7 +53,7 @@ export class CanvasComponent implements AfterViewInit {
     } else if (e.keyCode == 32) { // Space key for pause
       this.gamePause = !this.gamePause;
       if (!this.gamePause) {
-        this.game = setInterval(this.draw, 100);
+        this.game = setInterval(this.draw, this.speed);
       } else {
         clearInterval(this.game.bind(this));
         this.draw();
@@ -83,7 +86,6 @@ export class CanvasComponent implements AfterViewInit {
       this.score += 1;
       if (this.score > this.highestScore) {
         this.highestScore = this.score;
-        // localStorage.setItem("highestScore", this.highestScore);
       }
       this.food = {
         x: Math.floor(Math.random() * 20) * this.box,
@@ -125,30 +127,30 @@ export class CanvasComponent implements AfterViewInit {
 
   upClick(){
     this.d = "UP";
-    this.game = setInterval(this.draw, 100);
+    this.game = setInterval(this.draw, this.speed);
   }
 
   leftClick() {
     this.d = "LEFT";
-    // this.game = setInterval(this.draw, 100);
   }
 
   playClick() {
-    // this.game = setInterval(this.draw, 100);
+    // this.game = setInterval(this.draw, this.speed);
     // this.gamePause = !this.gamePause;
-    // this.game = setInterval(this.draw.bind(this), 100);
+    // this.game = setInterval(this.draw.bind(this), this.speed);
   }
 
   rightClick() {
     this.d = "RIGHT";
-    // this.game = setInterval(this.draw, 100);
   }
 
   downClick() {
     this.d = "DOWN";
-    // this.game = setInterval(this.draw, 100);
-
   }
+
+  // changeSpeed(e:any){
+  //   console.log(e);
+  // }
 
 
 }
