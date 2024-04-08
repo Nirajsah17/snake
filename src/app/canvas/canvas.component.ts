@@ -1,156 +1,147 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-canvas',
-  standalone: true,
-  imports: [],
   templateUrl: './canvas.component.html',
+  styleUrls: ['./canvas.component.css'],
+  standalone: true
 })
 export class CanvasComponent implements AfterViewInit {
-  @ViewChild('canvas') canvasRef!: ElementRef;
-  @ViewChild('canvasContainer') canvasContainer!: ElementRef;
-  
-  context!: CanvasRenderingContext2D;
-  snakeHead!: { x: number; y: number };
-  snakeTail!: { x: number; y: number };
-  score = 0; // score 
-  food: { x: number; y: number , width: number, height: number} = { x: 0, y: 0 , width: 10, height: 10 };
-  step: number = 10; //
-  snakeLength: number = 0;
-  resizeObserver! : ResizeObserver;
-  currentPos: string = "right";
+  highestScore = 0;
+  score = 0;
+  width = 400;
+  height = 340;
+  box: number = 20;
+  snake: { x: number, y: number }[] = [{ x: 10 * this.box, y: 10 * this.box }];
+  food: { x: number, y: number } = { x: Math.floor(Math.random() * 20) * this.box, y: 0 };
+  d: any;
+  gamePause: boolean = false;
+  ctx: any;
+  game: any;
 
-  ngAfterViewInit(): void {
-    const canvas = this.canvasRef.nativeElement;
-    const container = this.canvasContainer.nativeElement;
-    this.context = canvas.getContext('2d');
-    this.resizeCanvas(container);
-    this.initGame();
-  }
+  @ViewChild("canvas") canvas!: ElementRef;
+  @ViewChild("container") container!: ElementRef;
 
-  initGame(){
-    // Set the initial head and tail position
-    // Set initial food position
-    this.snakeHead = { x: 10, y: 10 };
-    this.snakeTail = { x: 20, y: 10 };
-    let x = this.context.canvas.width;
-    let y = this.context.canvas.height;
-    this.food.x = this.getRandomInt(1,x);
-    this.food.y = this.getRandomInt(1,y);
-    this.drawSnake(this.snakeHead, this.snakeTail); 
-    this.drawFood(this.food);
-    // this.drawScore();  
-  }
 
-  render(){
-    this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
-    this.drawSnake(this.snakeHead, this.snakeTail);
-    this.drawFood(this.food);
-  }
+  ngAfterViewInit() {
+    this.ctx = this.canvas.nativeElement.getContext("2d");
+    console.log(this.ctx);
 
-  drawSnake(head : any , tail: any) :void{
-      this.context.strokeStyle = "white";
-      this.context.lineWidth = 4;
-      this.context.beginPath();
-      this.context.moveTo(head.x, head.y);
-      this.context.lineTo(tail.x, tail.y);
-      this.context.closePath();
-      this.context.stroke();
-  }
-
-  drawFood(food:any){
-    this.context.fillStyle = "red";
-    this.context.fillRect(food.x, food.y, food.width, food.height);
-  }
-
-  moveSnake(food: any) : void{
-    if(this.snakeHead.x == food.x && this.snakeHead.y == food.y){
-      // this.grow();
-    }
-    this.updatePosition(this.currentPos);
-  }
-
-  resizeCanvas(element: HTMLElement): void {
-    this.resizeObserver = new ResizeObserver(() => {
-      const canvas = this.canvasRef.nativeElement;
-      const container = element;
-      canvas.width = container.clientWidth - 10;
-      canvas.height = container.clientHeight - 100;
-      this.render();
+    const resizeObserver = new ResizeObserver(entries => {
+      entries.forEach(entry => {
+        const container = entry.target;
+        this.canvas.nativeElement.width = container.clientWidth;
+        this.canvas.nativeElement.height = container.clientHeight;
+      });
     });
-    this.resizeObserver.observe(element);
+    resizeObserver.observe(this.container.nativeElement);
+    this.game = setInterval(this.draw.bind(this), 100);
   }
 
-  getRandomInt(min: number, max: number): number {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  direction(e: any) {
+    if (e.keyCode == 37 && this.d != "RIGHT") {
+      this.d = "LEFT";
+    } else if (e.keyCode == 38 && this.d != "DOWN") {
+      this.d = "UP";
+    } else if (e.keyCode == 39 && this.d != "LEFT") {
+      this.d = "RIGHT";
+    } else if (e.keyCode == 40 && this.d != "UP") {
+      this.d = "DOWN";
+    } else if (e.keyCode == 32) { // Space key for pause
+      this.gamePause = !this.gamePause;
+      if (!this.gamePause) {
+        this.game = setInterval(this.draw, 100);
+      } else {
+        clearInterval(this.game);
+        this.draw();
+      }
+    }
+    console.log(this.d);
+
   }
 
-  updatePosition(position: string): void {
-    switch (position) {
-      case 'up':
-        this.snakeHead.y = this.snakeHead.y - this.step;
-        this.snakeTail.y = this.snakeTail.y - this.step;
-        break;
-      case 'down':
-        this.snakeHead.y = this.snakeHead.y + this.step;
-        this.snakeTail.y = this.snakeTail.y + this.step;
-        break;
-      case 'left':
-        this.snakeHead.x = this.snakeHead.x - this.step;
-        this.snakeTail.x = this.snakeTail.x - this.step;
-        break;
-      case 'right':
-        this.snakeHead.x = this.snakeHead.x + this.step;
-        this.snakeTail.x = this.snakeTail.x + this.step;
-        break;
-      default:
-        break;
+  draw() {
+    if (this.gamePause) return;  // Stop drawing if game is paused
+
+    this.ctx.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+
+    for (let i = 0; i < this.snake.length; i++) {
+      this.ctx.fillStyle = (i === 0) ? "green" : "white";
+      this.ctx.fillRect(this.snake[i].x, this.snake[i].y, this.box, this.box);
+      this.ctx.strokeStyle = "black";
+      this.ctx.strokeRect(this.snake[i].x, this.snake[i].y, this.box, this.box);
+    }
+    this.ctx.fillStyle = "red";
+    this.ctx.fillRect(this.food.x, this.food.y, this.box, this.box);
+    let snakeX = this.snake[0].x;
+    let snakeY = this.snake[0].y;
+    if (this.d == "LEFT") snakeX -= this.box;
+    if (this.d == "UP") snakeY -= this.box;
+    if (this.d == "RIGHT") snakeX += this.box;
+    if (this.d == "DOWN") snakeY += this.box;
+    if (snakeX == this.food.x && snakeY == this.food.y) {
+      this.score += 1;
+      if (this.score > this.highestScore) {
+        this.highestScore = this.score;
+        // localStorage.setItem("highestScore", this.highestScore);
+      }
+      this.food = {
+        x: Math.floor(Math.random() * 20) * this.box,
+        y: Math.floor(Math.random() * 20) * this.box
+      };
+    } else {
+      this.snake.pop();
+    }
+
+    let newHead = {
+      x: snakeX,
+      y: snakeY
+    };
+
+    this.checkCollision(newHead, this.snake);
+
+    this.snake.unshift(newHead);
+  }
+  checkCollision(head: any, array: any) {
+    for (let i = 1; i < array.length; i++) {
+      if (head.x === array[i].x && head.y === array[i].y) {
+        this.gameOver();
+      }
+    }
+
+    if (
+      head.x < 0 || head.y < 0 ||
+      head.x >= this.canvas.nativeElement.width || head.y >= this.canvas.nativeElement.height
+    ) {
+      this.gameOver();
     }
   }
 
-  handleLeftClick(event: any): void {
-    this.updatePosition("left")
-    this.currentPos = "left";
+  gameOver() {
+    clearInterval(this.game);
+    alert("Game Over! Your score is " + this.score);
+    location.reload();
   }
 
-  handleRightClick(){
-    this.currentPos = "right";
-    this.updatePosition("right")
+  upClick(){
+    this.d = "UP"
   }
 
-  handleUpClick(){
-    this.updatePosition("up")
-    this.currentPos = "up";
+  leftClick() {
+    this.d = "LEFT";
   }
 
-  handleDownClick(){
-    this.updatePosition("down");
-    this.currentPos = "down";
+  playClick() {
+
   }
-  startGame(){
-    setInterval(()=>{
-      this.render();
-      this.moveSnake(this.food);
-    }, 200)
+
+  rightClick() {
+    this.d = "RIGHT";
   }
-  keyDownHandler(event:any):void {
-    switch (event.key) {
-      case 'ArrowUp':
-        this.currentPos = "up"
-        break;
-      case 'ArrowDown':
-        this.currentPos = "down"
-        break;
-      case 'ArrowLeft':
-        this.currentPos = "left"
-        break;
-      case 'ArrowRight':
-        this.currentPos = "right"
-        break;
-      default:
-        break;
-    }
+
+  downClick() {
+    this.d = "DOWN";
   }
+
+
 }

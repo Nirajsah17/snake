@@ -1,14 +1,23 @@
-<div #canvasContainer  class="w-full h-full bg-gray-900"   tabindex="0" (keydown)="keyDownHandler($event)">
-  <canvas #canvas width="700" height="500" class="border border-gray-600" ></canvas>
-  <div class="flex text-white text-2xl">
-    <!-- Align item for UX  -->
-    <button class="p-2 hover:bg-gray-700 hover:rounded-md m-1"  (click)="handleLeftClick($event)">Left</button>
-    <button class="p-2 hover:bg-gray-700 hover:rounded-md m-1" (click)="handleRightClick()">Right</button>
-    <button class="p-2 hover:bg-gray-700 hover:rounded-md m-1" (click)="handleUpClick()">Up</button>
-    <button class="p-2 hover:bg-gray-700 hover:rounded-md m-1" (click)="handleDownClick()">Down</button>
-  </div>
-  <div class="flex flex-row-reverse text-white text-lg">
-    <span class="p-2">00</span>
-    <button class="p-1 hover:bg-gray-600" (click)="startGame()">Start</button>
-  </div>
+<div class=" w-full h-full flex flex-col justify-between items-center bg-gray-800 text-white text-xl font-serif">
+    <div class="w-full flex flex-row-reverse h-12 border-b border-gray-400">
+        <div class="p-2">user</div>
+        <div class="p-2">High Score : {{highestScore}}</div>
+        <div class="p-2">Score : {{score}}</div>
+    </div>
+    <div #container class="w-full h-full bg-gray-700 flex flex-1" tabindex="1"(keydown)="direction($event)">
+        <canvas #canvas class="" width={{width}} height={{height}}></canvas>
+    </div>
+    <div class="w-full flex-col  items-center ">
+        <div class="flex justify-center">
+            <div class="p-2 border border-gray-400 rounded-md cursor-pointer hover:bg-teal-800">Up</div>
+        </div>
+        <div class="flex justify-center p-2">
+            <div class="p-2 border border-gray-400 rounded-md cursor-pointer hover:bg-teal-800" (click)="leftClick()">left</div>
+            <div class="p-2 border border-gray-400 rounded-md cursor-pointer hover:bg-teal-800" (click)="playClick()">play</div>
+            <div class="p-2 border border-gray-400 rounded-md cursor-pointer hover:bg-teal-800" (click)="rightClick()">right</div>
+        </div>
+        <div class="flex justify-center">
+            <div class="p-2 border border-gray-400 rounded-md cursor-pointer hover:bg-teal-800" (click)="downClick()">down</div>
+        </div>
+    </div>
 </div>

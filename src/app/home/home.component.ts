@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef,AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-home',
@@ -7,5 +7,10 @@ import { Component } from '@angular/core';
   templateUrl: './home.component.html'
 })
 export class HomeComponent {
+  
 
+
+  AfterViewInit(){
+
+  }
 }
