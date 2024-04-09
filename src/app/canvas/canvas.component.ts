@@ -20,7 +20,7 @@ export class CanvasComponent implements AfterViewInit {
   gamePause: boolean = false;
   ctx: any;
   game: any;
-  speed: number = 100;
+  speed: number = 400;
 
   @ViewChild("canvas") canvas!: ElementRef;
   @ViewChild("container") container!: ElementRef;
@@ -120,8 +120,8 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   gameOver() {
-    clearInterval(this.game);
     alert("Game Over! Your score is " + this.score);
+    clearInterval(this.game.bind(this));
     window.location.reload();
   }
 
