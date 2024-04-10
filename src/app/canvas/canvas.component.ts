@@ -74,8 +74,10 @@ export class CanvasComponent implements AfterViewInit {
       this.ctx.strokeStyle = "black";
       this.ctx.strokeRect(this.snake[i].x, this.snake[i].y, this.box, this.box);
     }
+
     this.ctx.fillStyle = "red";
     this.ctx.fillRect(this.food.x, this.food.y, this.box, this.box);
+
     let snakeX = this.snake[0].x;
     let snakeY = this.snake[0].y;
     if (this.d == "LEFT") snakeX -= this.box;
@@ -87,10 +89,7 @@ export class CanvasComponent implements AfterViewInit {
       if (this.score > this.highestScore) {
         this.highestScore = this.score;
       }
-      this.food = {
-        x: Math.floor(Math.random() * 20) * this.box,
-        y: Math.floor(Math.random() * 20) * this.box
-      };
+      this.generateFood(); // Generate new food
     } else {
       this.snake.pop();
     }
@@ -104,6 +103,19 @@ export class CanvasComponent implements AfterViewInit {
 
     this.snake.unshift(newHead);
   }
+
+
+  generateFood() {
+    let foodX : number;
+    let foodY:  number;
+    do {
+      foodX = Math.floor(Math.random() * 20) * this.box;
+      foodY = Math.floor(Math.random() * 20) * this.box;
+    } while (this.snake.some(segment => segment.x === foodX && segment.y === foodY));
+
+    this.food = { x: foodX, y: foodY };
+  }
+  
   checkCollision(head: any, array: any) {
     for (let i = 1; i < array.length; i++) {
       if (head.x === array[i].x && head.y === array[i].y) {
@@ -120,15 +132,29 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   gameOver() {
-    alert("Game Over! Your score is " + this.score);
-    this.gamePause = true
-    clearInterval(this.game.bind(this));
-    window.location.reload();
+    const finalScore = this.score;
+    clearInterval(this.game); // Stop the game loop
+
+    setTimeout(() => { // Delay alert to ensure game loop stops before showing alert
+      alert("Game Over! Your score is " + finalScore);
+      const playAgain = confirm("Do you want to play again?");
+      if (playAgain) {
+        // Reset game state
+        this.score = 0;
+        this.snake = [{ x: 10 * this.box, y: 10 * this.box }];
+        this.food = { x: Math.floor(Math.random() * 20) * this.box, y: 0 };
+        this.d = null; // Reset direction
+        this.speed = 400; // Reset speed (adjust as needed)
+        this.game = setInterval(this.draw.bind(this), this.speed); // Start a new game
+      } else {
+        this.gamePause = true; // Pause the game if not playing again
+      }
+    }, 100); // Adjust delay as needed
   }
+
 
   upClick(){
     this.d = "UP";
-    this.game = setInterval(this.draw, this.speed);
   }
 
   leftClick() {
@@ -136,9 +162,14 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   playClick() {
-    // this.game = setInterval(this.draw, this.speed);
-    // this.gamePause = !this.gamePause;
-    // this.game = setInterval(this.draw.bind(this), this.speed);
+    this.gamePause = !this.gamePause; // Toggle isPaused
+    if (!this.gamePause) {
+      // Start the game logic (e.g., start the game loop)
+      this.game = setInterval(this.draw.bind(this), this.speed);
+    } else {
+      // Pause the game logic (e.g., stop the game loop)
+      clearInterval(this.game);
+    }
   }
 
   rightClick() {
@@ -150,11 +181,15 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   low(){
-    this.speed+=10;
+    this.speed += 10; // Increase speed by 10 milliseconds
+    clearInterval(this.game); // Clear the current interval
+    this.game = setInterval(this.draw.bind(this), this.speed);
   }
 
   high(){
-    this.speed-=10;
+    this.speed -= 10; // Decrease speed by 10 milliseconds
+    clearInterval(this.game); // Clear the current interval
+    this.game = setInterval(this.draw.bind(this), this.speed);
   }
 
   // changeSpeed(e:any){
