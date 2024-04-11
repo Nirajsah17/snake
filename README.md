@@ -17,5 +17,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ### Download Mobile application (APK)
 
-<a href="https://drive.google.com/file/d/1QV4Sbdldm5fAE2fk5KrAWjEa_gZ1szhd/">download</a>
+<a href="https://drive.google.com/file/d/1mtqQ4Ef4R8JPwcig1JeyHtfd0jPd6elp/">download snakeV1</a>
+<a href="https://drive.google.com/file/d/1QV4Sbdldm5fAE2fk5KrAWjEa_gZ1szhd/">download snakeV2</a>
+
 
