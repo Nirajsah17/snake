@@ -14,3 +14,8 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+### Download Mobile application (APK)
+
+<a href="https://drive.google.com/file/d/1QV4Sbdldm5fAE2fk5KrAWjEa_gZ1szhd/">download</a>
+
